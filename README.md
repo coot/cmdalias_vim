@@ -13,7 +13,7 @@ To define alias use the command:
 where {alias} is the alias name (you might pretend to it the default range
 or count), {command} is the command that should be executed. The {alias} is
 any vim pattern that will be used to match what you are entering in the ':'
-command line (the pattern will have pretended '\C^' and appended '\>' - the
+command line (the pattern will have pretended '\C^' and appended '\\>' - the
 later one unless [match_end] is specified and equal 0). For commands which
 do not run external programs you can also set [history]=1 (default is 0),
 then the command history will remember what you have typped rather than what
@@ -53,7 +53,7 @@ or 'append' then the Append command will be used (as with vim many commands)
 You will find the handy BufClose command in BufClose plugin by Christian
 Robinson.
 
-Tip: to find if an alias is not coliding type ':<alias><C-d>'.
+Tip: to find if an alias is not coliding type ':\<alias\>\<C-d\>'.
 See ':help c^D'.
 
 Other Commands and Maps:
@@ -62,23 +62,23 @@ Other Commands and Maps:
 ```vim
 :CmdAliasToggle 
 ```
-toggles on/of the aliases. Since the plugin remaps <CR> in the command line
-this just delets/sets up the <CR> map.  When you want to type a function:
+toggles on/of the aliases. Since the plugin remaps \<CR\> in the command line
+this just delets/sets up the \<CR\> map.  When you want to type a function:
 ```vim
 :fun! X()
 ```
 or use the expression register @= you need to switch aliases
-off. The plugin also defines <C-M> map to <CR> which doesn't trigger
-aliasing mechanism. So you can type ':fun! X()<C-M>' on the command line.
+off. The plugin also defines \<C-M\> map to \<CR\> which doesn't trigger
+aliasing mechanism. So you can type ':fun! X()\<C-M\>' on the command line.
 ```vim
 :CmdAlias! {alias} 
 ```
 removes {alias}, this command has a nice completion.
 
-Note: If you have installed my [system plugin][http://www.vim.org/scripts/script.php?script_id=4224]
+Note: If you have installed my [system plugin](http://www.vim.org/scripts/script.php?script_id=4224)
 you need to update it to version 3 (otherwise you will get an error).
 
-There is another [plugin][http://www.vim.org/scripts/script.php?script_id=746]
+There is another [plugin](http://www.vim.org/scripts/script.php?script_id=746)
 with the same functionality, but different implementation and thus a different
 limitations.  It uses cabbreviations.  The problem with them is that it is
 more difficult to get the command bang working (what was the purpose of
@@ -101,7 +101,7 @@ Note: the first command has to end with / (to use |, this is a vim
 requirement.)
 
 Note: using the expression register:
-Since <C-R> is remapped in command line, you can not use it when you enter
+Since \<C-R\> is remapped in command line, you can not use it when you enter
 the expression register (:help ^R=). There is a patch on the way which fixes
 this disabling maps in expression register. Before it get accepted the
 plugin defies a map:
