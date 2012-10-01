@@ -2,12 +2,14 @@ Description
 ===========
 
 This plugin implements aliases for command names, wihtout vim restriction:
-user defined commands via |:command| must begin with a captial letter. Using
+user defined commands via :command must begin with a captial letter. Using
 this plugin you make an alias to a command where the alias, is any sequence.
 You can also register a defult range or count with the alias. In this way
 you can change the default range or count of vim commands.
 To define alias use the command: 
+```vim
 :CmdAlias {alias} {command} [history] [match_end] 
+```
 where {alias} is the alias name (you might pretend to it the default range
 or count), {command} is the command that should be executed. The {alias} is
 any vim pattern that will be used to match what you are entering in the ':'
@@ -37,13 +39,13 @@ Note: this alias would not work if we defined it with [history]=1.
 ```vim
 :CmdAlias %s s
 ```
-Change the default range of |:s| command from the current line to whole
+Change the default range of :s command from the current line to whole
 buffer. Note that :su will act with vim default range (the current line).
 ```vim
 :CmdAlias a\%[ppend] Append 
 ```
 define alias to the user command Append which will overwrite the vim command
-|:append|. The  \%[...] allows that if you type: 'a' or 'ap' or 'app', ...
+:append. The  \%[...] allows that if you type: 'a' or 'ap' or 'app', ...
 or 'append' then the Append command will be used (as with vim many commands)
 ```vim
 :CmdAlias bc\%[lose] BufClose
@@ -54,15 +56,18 @@ Robinson.
 Tip: to find if an alias is not coliding type ':<alias><C-d>'.
 See ':help c^D'.
 
-Commands:
----------
+Other Commands and Maps:
+------------------------
 
 ```vim
 :CmdAliasToggle 
 ```
 toggles on/of the aliases. Since the plugin remaps <CR> in the command line
 this just delets/sets up the <CR> map.  When you want to type a function:
-':fun! X()' or use the expression register |@=| you need to switch aliases
+```vim
+:fun! X()
+```
+or use the expression register @= you need to switch aliases
 off. The plugin also defines <C-M> map to <CR> which doesn't trigger
 aliasing mechanism. So you can type ':fun! X()<C-M>' on the command line.
 ```vim
@@ -100,7 +105,9 @@ Since <C-R> is remapped in command line, you can not use it when you enter
 the expression register (:help ^R=). There is a patch on the way which fixes
 this disabling maps in expression register. Before it get accepted the
 plugin defies a map:
+```vim
 cnoremap <C-M> <CR>
+```
 It will not trigger aliases, any way it might be a good idea to have such
 a map in case you want to avoid aliases.
 
