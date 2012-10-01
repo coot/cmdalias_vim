@@ -70,19 +70,18 @@ aliasing mechanism. So you can type ':fun! X()<C-M>' on the command line.
 ```
 removes {alias}, this command has a nice completion.
 
-Note: If you have installed system.vim plugin (script id 4224) you need to
-update to version 3 (otherwise you will get an error).
+Note: If you have installed my [system plugin][http://www.vim.org/scripts/script.php?script_id=4224]
+you need to update it to version 3 (otherwise you will get an error).
 
-There is another plugin with the same functionality, but different
-implementation and thus a different limitations.
-http://www.vim.org/scripts/script.php?script_id=746 It uses cabbreviations.
-The problem with them is that it is more difficult to get the command bang
-working (what was the purpose of implementing this plugin). The range and
-the count probably could be implemented using the same range parser used by
-this plugin. The advantage of the cabbreviations approach is that after
-hitting the ' ' you get the real command together with its completion.
-Implementing completion for aliases within this approach would be quite
-tedious.
+There is another [plugin][http://www.vim.org/scripts/script.php?script_id=746]
+with the same functionality, but different implementation and thus a different
+limitations.  It uses cabbreviations.  The problem with them is that it is
+more difficult to get the command bang working (what was the purpose of
+implementing this plugin). The range and the count probably could be
+implemented using the same range parser used by this plugin. The advantage of
+the cabbreviations approach is that after hitting the ' ' you get the real
+command together with its completion.  Implementing completion for aliases
+within this approach would be quite tedious.
 
 The aliasing works also when joining commands on the command line with "|",
 for example with a dummy alias:
