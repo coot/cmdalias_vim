@@ -56,6 +56,19 @@ Robinson.
 Tip: to find if an alias is not coliding type ':\<alias\>\<C-d\>'.
 See ':help c^D'.
 
+VIMRC
+-----
+
+To configure aliases on startup you haveto add the following lines to your
+vimrc file:
+```vim
+augroup VIMRC_aliases
+    au!
+    au VimEnter * CmdAlias ...
+    ...
+augroup END
+```
+
 Other Commands and Maps:
 ------------------------
 
@@ -118,7 +131,6 @@ If you want to debug define a list
 and for all calls an entry to this list will be appended.
 (except command lines which matches cmd_alias_debug since we don't want to
 record accessing to this variable)
-
 
 Author: Marcin Szamotulski
 

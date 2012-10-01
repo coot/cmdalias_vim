@@ -40,13 +40,24 @@
 " define alias to the user command Append which will overwrite the vim command
 " |:append|. The  \%[...] allows that if you type: 'a' or 'ap' or 'app', ...
 " or 'append' then the Append command will be used (as with vim many commands)
-
+"
 "   :CmdAlias bc\%[lose] BufClose
 " You will find the handy BufClose command in BufClose plugin by Christian
 " Robinson.
 "
 " Tip: to find if an alias is not coliding type ':<alias><C-d>'.
 " See ':help c^D'.
+"
+" VIMRC:
+" To configure aliases on startup you haveto add the following lines to your
+" vimrc file:
+"
+" augroup VIMRC_aliases
+"    au!
+"    au VimEnter * CmdAlias ...
+"    ...
+" augroup END
+"
 " ---------------------------------------------------------------------------
 "
 "   :CmdAliasToggle 
