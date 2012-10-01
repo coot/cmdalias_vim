@@ -3,6 +3,9 @@ Email: mszamot [AT] gmail [DOT] com
 Copyright: © Marcin Szamotulski, 2012
 License: vim-license, see :help license
 
+Description
+===========
+
 This plugin implements aliases for command names, wihtout vim restriction:
 user defined commands via |:command| must begin with a captial letter. Using
 this plugin you make an alias to a command where the alias, is any sequence.
@@ -28,8 +31,8 @@ it unless you really want to experiment - you've been warned ;).
 If you don't provide any argument to the :CmdAlias command it will list all
 aliases.
 
----------------------------------------------------------------------------
 Examples: 
+---------
    :CmdAlias ali\%[as] CmdAlias
 Note: this alias would not work if we defined it with [history]=1.
    :CmdAlias %s s
@@ -47,6 +50,7 @@ Robinson.
 
 Tip: to find if an alias is not coliding type ':<alias><C-d>'.
 See ':help c^D'.
+
 ---------------------------------------------------------------------------
 
   :CmdAliasToggle 
