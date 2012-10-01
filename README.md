@@ -7,7 +7,7 @@ this plugin you make an alias to a command where the alias, is any sequence.
 You can also register a defult range or count with the alias. In this way
 you can change the default range or count of vim commands.
 To define alias use the command: 
-```vim
+```viml
 :CmdAlias {alias} {command} [history] [match_end] 
 ```
 where {alias} is the alias name (you might pretend to it the default range
@@ -32,22 +32,22 @@ aliases.
 
 Examples: 
 ---------
-```vim
+```viml
 :CmdAlias ali\%[as] CmdAlias
 ```
 Note: this alias would not work if we defined it with [history]=1.
-```vim
+```viml
 :CmdAlias %s s
 ```
 Change the default range of :s command from the current line to whole
 buffer. Note that :su will act with vim default range (the current line).
-```vim
+```viml
 :CmdAlias a\%[ppend] Append 
 ```
 define alias to the user command Append which will overwrite the vim command
 :append. The  \%[...] allows that if you type: 'a' or 'ap' or 'app', ...
 or 'append' then the Append command will be used (as with vim many commands)
-```vim
+```viml
 :CmdAlias bc\%[lose] BufClose
 ``` 
 You will find the handy BufClose command in BufClose plugin by Christian
@@ -61,7 +61,7 @@ VIMRC
 
 To configure aliases on startup you haveto add the following lines to your
 vimrc file:
-```vim
+```viml
 augroup VIMRC_aliases
     au!
     au VimEnter * CmdAlias ...
@@ -72,18 +72,18 @@ augroup END
 Other Commands and Maps:
 ------------------------
 
-```vim
+```viml
 :CmdAliasToggle 
 ```
 toggles on/of the aliases. Since the plugin remaps \<CR\> in the command line
 this just delets/sets up the \<CR\> map.  When you want to type a function:
-```vim
+```viml
 :fun! X()
 ```
 or use the expression register @= you need to switch aliases
 off. The plugin also defines \<C-M\> map to \<CR\> which doesn't trigger
 aliasing mechanism. So you can type ':fun! X()\<C-M\>' on the command line.
-```vim
+```viml
 :CmdAlias! {alias} 
 ```
 removes {alias}, this command has a nice completion.
@@ -103,11 +103,11 @@ within this approach would be quite tedious.
 
 The aliasing works also when joining commands on the command line with "|",
 for example with a dummy alias:
-```vim
+```viml
   Alias S %s
 ```  
 you can run:
-```vim
+```viml
 :S/aaa/yyy/|S/bbb/xxx
 ```
 Note: the first command has to end with / (to use |, this is a vim
@@ -118,14 +118,14 @@ Since \<C-R\> is remapped in command line, you can not use it when you enter
 the expression register (:help ^R=). There is a patch on the way which fixes
 this disabling maps in expression register. Before it get accepted the
 plugin defies a map:
-```vim
+```viml
 cnoremap <C-M> <CR>
 ```
 It will not trigger aliases, any way it might be a good idea to have such
 a map in case you want to avoid aliases.
 
 If you want to debug define a list
-```vim
+```viml
  let g:cmd_alias_debug = []
 ``` 
 and for all calls an entry to this list will be appended.
