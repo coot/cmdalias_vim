@@ -95,5 +95,3 @@ If you want to debug define a list
 and for all calls an entry to this list will be appended.
 (except command lines which matches cmd_alias_debug since we don't want to
 record accessing to this variable)
-
-
