@@ -7,7 +7,7 @@ this plugin you make an alias to a command where the alias, is any sequence.
 You can also register a defult range or count with the alias. In this way
 you can change the default range or count of vim commands.
 To define alias use the command: 
-      :CmdAlias {alias} {command} [history] [match_end] 
+:CmdAlias {alias} {command} [history] [match_end] 
 where {alias} is the alias name (you might pretend to it the default range
 or count), {command} is the command that should be executed. The {alias} is
 any vim pattern that will be used to match what you are entering in the ':'
@@ -31,22 +31,22 @@ aliases.
 Examples: 
 ---------
 ```vim
-   :CmdAlias ali\%[as] CmdAlias
+:CmdAlias ali\%[as] CmdAlias
 ```
 Note: this alias would not work if we defined it with [history]=1.
 ```vim
-   :CmdAlias %s s
+:CmdAlias %s s
 ```
 Change the default range of |:s| command from the current line to whole
 buffer. Note that :su will act with vim default range (the current line).
 ```vim
-  :CmdAlias a\%[ppend] Append 
+:CmdAlias a\%[ppend] Append 
 ```
 define alias to the user command Append which will overwrite the vim command
 |:append|. The  \%[...] allows that if you type: 'a' or 'ap' or 'app', ...
 or 'append' then the Append command will be used (as with vim many commands)
 ```vim
-  :CmdAlias bc\%[lose] BufClose
+:CmdAlias bc\%[lose] BufClose
 ``` 
 You will find the handy BufClose command in BufClose plugin by Christian
 Robinson.
@@ -54,10 +54,11 @@ Robinson.
 Tip: to find if an alias is not coliding type ':<alias><C-d>'.
 See ':help c^D'.
 
----------------------------------------------------------------------------
+Commands:
+---------
 
 ```vim
-  :CmdAliasToggle 
+:CmdAliasToggle 
 ```
 toggles on/of the aliases. Since the plugin remaps <CR> in the command line
 this just delets/sets up the <CR> map.  When you want to type a function:
@@ -65,7 +66,7 @@ this just delets/sets up the <CR> map.  When you want to type a function:
 off. The plugin also defines <C-M> map to <CR> which doesn't trigger
 aliasing mechanism. So you can type ':fun! X()<C-M>' on the command line.
 ```vim
-  :CmdAlias! {alias} 
+:CmdAlias! {alias} 
 ```
 removes {alias}, this command has a nice completion.
 
