@@ -1,6 +1,10 @@
 Description
 ===========
 
+Note: the interface has changed slightly: buflocal aliases added. To redefine
+default range add it to the cmd rather than alias (this is more logical).
+
+
 This plugin implements aliases for command names, wihtout vim restriction:
 user defined commands via :command must begin with a captial letter. Using
 this plugin you make an alias to a command where the alias, is any sequence.
@@ -8,7 +12,7 @@ You can also register a defult range or count with the alias. In this way
 you can change the default range or count of vim commands.
 To define alias use the command: 
 ```viml
-:CmdAlias {alias} {command} [history] [match_end] 
+:CmdAlias {alias} {command} [history] [buflocal] [match_end] 
 ```
 where {alias} is the alias name (you might pretend to it the default range
 or count), {command} is the command that should be executed. The {alias} is
@@ -19,7 +23,9 @@ do not run external programs you can also set [history]=1 (default is 0),
 then the command history will remember what you have typped rather than what
 was executed. But usage of it is limited, for example you can use with
 commands that echo some output because it will be hidden by next call to
-histdel() vim function.
+histdel() vim function. If [buflocal] has true value (1 for example) then the
+alias will be only valid in the current buffer (it will be denotes with @ when
+listing the aliases as Vim does for maps).
 
 
 Note: If you define [match_end] = 0 you might fall into troubles, simply
@@ -37,7 +43,7 @@ Examples:
 ```
 Note: this alias would not work if we defined it with [history]=1.
 ```viml
-:CmdAlias %s s
+:CmdAlias s %s
 ```
 Change the default range of :s command from the current line to whole
 buffer. Note that :su will act with vim default range (the current line).
@@ -55,6 +61,15 @@ Robinson.
 
 Tip: to find if an alias is not coliding type ':\<alias\>\<C-d\>'.
 See ':help c^D'.
+
+```viml
+:CmdAlias SP  1,/\\\\begin{document}/-1s
+```
+The :SP command will substitute in the LaTeX preambule (which starts in the
+first line and ends before '\begin{document}'). Note that the Vim pattern to
+find '\begin...' is '\\begin...' and each backslash needs to be escaped onece
+more. Thus we have four slashes (like in *Python* :).
+
 
 VIMRC
 -----

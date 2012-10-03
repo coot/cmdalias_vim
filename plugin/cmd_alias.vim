@@ -110,6 +110,7 @@
 " INTERNALS {{{
 if !exists("s:aliases")
     let s:aliases = {}
+    let g:aliases = s:aliases
     " entries are dictionaries:
     " { 'alias': alias, 'cmd': cmd, 'history': 1/0, 'default_range': range, 'match_end': 1/0}
 endif
@@ -126,37 +127,37 @@ fun! ParseRange(cmdline) " {{{
 	    let add = matchstr(cmdline, '^\s*\d\+')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
-	    echom range
+	    " echom range
 	elseif cmdline =~ '^\.\s*'
 	    let add = matchstr(cmdline, '^\s*\.\%([+-]\d*\)\=')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
-	    echom range
+	    " echom range
 	elseif cmdline =~ '^\s*\/'
 	    let add = matchstr(cmdline, '^\s*\/\%([^/]\|\\\@<=\/\)*\/\%([-+]\d*\)\=')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
-	    echom range . "<F>".cmdline."<"
+	    " echom range . "<F>".cmdline."<"
 	elseif cmdline =~ '^\s*?'
 	    let add = matchstr(cmdline, '^\s*?\%([^?]\|\\\@<=?\)*?\%([-+]\d*\)\=')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
-	    echom range . "<?>".cmdline."<"
+	    " echom range . "<?>".cmdline."<"
 	elseif cmdline =~ '^\s*\$'
 	    let add = matchstr(cmdline, '^\s*\$\%(-\d*\)\=')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
-	    echom range
+	    " echom range
 	elseif cmdline =~ '^\s*\\\%(\/\|?\|&\)'
 	    let add = matchstr(cmdline, '^\s*\\\%(\/\|?\|&\)')
 	    let range .== add
 	    let cmdine = cmdline[add:]
-	    echom range
+	    " echom range
 	elseif cmdline =~ '^\s*[;,]'
 	    let add = matchstr(cmdline, '^\s*[;,]')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
-	    echom range . "<;>".cmdline
+	    " echom range . "<;>".cmdline
 	elseif cmdline =~ '^\s*\w'
 	    return [ range, cmdline, 0]
 	endif
@@ -196,7 +197,8 @@ fun! ReWriteCmdLine() " {{{
 	let test=0
 	let [range, cmdline, error] = ParseRange(cmdline)
 	for alias in values(s:aliases)
-	    if cmdline =~# '^\s*'.alias['alias'].(alias['match_end'] ? '\>' : '')
+	    if cmdline =~# '^\s*'.alias['alias'].(alias['match_end'] ? '\>' : '') && 
+			\ (!alias['buflocal'] || alias['buflocal'] == bufnr('%'))
 		let test=1
 		break
 	    endif
@@ -238,16 +240,24 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
     " underscore.
     let [default_range, alias, error] = ParseRange(a:alias)
     let hist = (a:0 >= 1 ? a:1 : 0)
-    let match_end = (a:0 >= 2 ? a:2 : 1)
-    let s:aliases[alias] = { 'alias': alias, 'cmd': a:cmd, 'history': hist, 'default_range': default_range, 'match_end': match_end, }
+    let buflocal = (a:0 >= 2 && a:2 ? bufnr("%") : 0 )
+    let match_end = (a:0 >= 3 ? a:3 : 1)
+    let s:aliases[alias] = { 'alias': alias, 'cmd': a:cmd, 'history': hist, 'buflocal':buflocal, 'default_range': default_range, 'match_end': match_end, }
 endfun " }}}
 fun! <SID>RegAlias(bang,...) " {{{
     if a:0 == 0
-	let lmax = max(map(values(s:aliases), "len(v:val['alias'])+len(v:val['default_range'])"))
-	let rmax = max(map(values(s:aliases), "len(v:val['cmd'])"))
-	echo "ALIAS".repeat(" ", lmax)."CMD".repeat(" ", 5+rmax-3)."HIS"
+	let lmax = max(map(values(s:aliases), "len(v:val['alias'])"))
+	let rmax = max(map(values(s:aliases), "len(v:val['cmd'])+len(v:val['default_range'])"))
+	echohl Title
+	echo " alias".repeat(" ", lmax)."cmd".repeat(" ", 5+rmax-3)."his")
+	echohl Normal
 	for alias in sort(values(s:aliases), "<SID>Compare")
-	    echo alias['default_range'].alias['alias'].repeat(" ", (5+lmax-len(alias['default_range'])-len(alias['alias']))).alias['cmd'].repeat(" ", (5+rmax-len(alias['cmd']))).( alias['history'] ? 'yes' : '' )
+	    if alias['buflocal'] == bufnr('%') || !alias['buflocal']
+		echo (alias['buflocal'] ? '@' : ' ').
+			\ alias['alias'].repeat(" ", (5+lmax-len(alias['alias']))).
+			\ alias['default_range'].alias['cmd'].repeat(" ", (5+rmax-len(alias['default_range'].alias['cmd']))).
+			\ (alias['history'] ? 'yes' : '  ' ).repeat(" ", 4)
+	    endif
 	endfor
     else
 	if a:bang == "!"
@@ -261,10 +271,13 @@ fun! <SID>RegAlias(bang,...) " {{{
 	    echoerr 'you have to specify the alias and the command'
 	    return
 	endif
-	let [range, alias, error] = ParseRange(a:1)
+	let [range, cmd, error] = ParseRange(a:2)
 	let s:aliases[a:1]= {
-		    \ 'alias': alias, 'cmd': a:2, 
-		    \ 'history': (a:0 >=3 ? a:3 : 0), 'default_range': (a:0>=4 ? a:4 : ""),
+		    \ 'alias': a:1, 
+		    \ 'cmd': cmd, 
+		    \ 'history': (a:0 >=3 ? a:3 : 0), 
+		    \ 'default_range': range,
+		    \ 'buflocal': (a:0 >=4 && a:4 ? bufnr('%') : 0),
 		    \ 'match_end': (a:0>=5 ? a:5 : 1),
 		    \ }
     endif
@@ -283,4 +296,5 @@ fun! <SID>AliasToggle() " {{{
     endif
 endfun " }}}
 com! -nargs=0 CmdAliasToggle :call <SID>AliasToggle()
+nnoremap <F12> :CmdAliasToggle<CR>
 " }}}
