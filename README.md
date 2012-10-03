@@ -2,7 +2,8 @@ Description
 ===========
 
 Note: the interface has changed slightly: buflocal aliases added. To redefine
-default range add it to the cmd rather than alias (this is more logical).
+default range add it to the cmd rather than to the alias (this seems to be
+more intuitive).
 
 
 This plugin implements aliases for command names, wihtout vim restriction:
