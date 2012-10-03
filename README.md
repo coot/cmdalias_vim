@@ -12,16 +12,16 @@ You can also register a defult range or count with the alias. In this way
 you can change the default range or count of vim commands.
 To define alias use the command: 
 ```viml
-:CmdAlias {alias} {command} [history] [buflocal] [match_end] 
+:CmdAlias {alias} [range]{command} [history] [buflocal] [match_end] 
 ```
-where {alias} is the alias name (you might pretend to it the default range
-or count), {command} is the command that should be executed. The {alias} is
-any vim pattern that will be used to match what you are entering in the ':'
-command line (the pattern will have pretended '\C^' and appended '\\>' - the
-later one unless [match_end] is specified and equal 0). For commands which
-do not run external programs you can also set [history]=1 (default is 0),
-then the command history will remember what you have typped rather than what
-was executed. But usage of it is limited, for example you can use with
+where {alias} is the alias name, {command} is the command that should be
+executed. You might pretend new default [range] or count to the command. The
+{alias} is any vim pattern that will be used to match what you are entering in
+the ':' command line (the pattern will have pretended '\C^' and appended '\\>'
+- the later one unless [match_end] is specified and equal 0). For commands
+which do not run external programs you can also set [history]=1 (default is
+0), then the command history will remember what you have typped rather than
+what was executed. But usage of it is limited, for example you can use with
 commands that echo some output because it will be hidden by next call to
 histdel() vim function. If [buflocal] has true value (1 for example) then the
 alias will be only valid in the current buffer (it will be denotes with @ when
