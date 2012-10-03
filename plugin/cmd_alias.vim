@@ -6,9 +6,9 @@
 " Description
 " ===========
 "
-" Note: the interface has changed slightly: buflocal aliases added. To redefine
-" default range add it to the cmd rather than to the alias (this seems to be
-" more intuitive).
+" Note: the interface has changed slightly (in version 2): buflocal aliases
+" added. To redefine default range add it to the cmd rather than to the alias
+" (this seems to be more intuitive).
 "
 "
 " This plugin implements aliases for command names, wihtout vim restriction:
@@ -33,11 +33,12 @@
 " alias will be only valid in the current buffer (it will be denotes with @ when
 " listing the aliases as Vim does for maps).
 "
-"
 " Note: If you define [match_end] = 0 you might fall into troubles, simply
 " because a the plugin might substitute part of a command name. So don't use
 " it unless you really want to experiment - you've been warned ;).
 "
+" Fork me on GitHub:
+" https://github.com/coot/cmdalias_vim
 "
 " If you don't provide any argument to the :CmdAlias command it will list all
 " aliases.
@@ -75,7 +76,6 @@
 " first line and ends before `\begin{document}`). Note that the Vim pattern to
 " find `\begin...` is `\\begin...` and each backslash needs to be escaped onece
 " more. Thus we have four slashes (like in *Python* :).
-"
 "
 " VIMRC
 " -----
@@ -152,12 +152,7 @@
 " and for all calls an entry to this list will be appended.
 " (except command lines which matches cmd_alias_debug since we don't want to
 " record accessing to this variable)
-"
-" Author: Marcin Szamotulski
-" Email: mszamot [AT] gmail [DOT] com
-" Copyright: © Marcin Szamotulski, 2012
-" License: vim-license, see :help license
-"
+
 " INTERNALS {{{
 if !exists("s:aliases")
     let s:aliases = {}
