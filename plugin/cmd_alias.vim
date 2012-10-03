@@ -156,9 +156,15 @@
 " INTERNALS {{{
 if !exists("s:aliases")
     let s:aliases = {}
-    let g:aliases = s:aliases
     " entries are dictionaries:
-    " { 'alias': alias, 'cmd': cmd, 'history': 1/0, 'default_range': range, 'match_end': 1/0}
+    " { 
+    " 'alias': alias, 
+    " 'cmd': cmd,
+    " 'history': 1/0, 
+    " 'buflocal': ['list of buffer numbers, include 0 for global'], 
+    " 'default_range': range,
+    " 'match_end': 1/0 
+    " }
 endif
 let s:system = !empty(globpath(&rtp, 'plugin/system.vim'))
 fun! ParseRange(cmdline) " {{{
