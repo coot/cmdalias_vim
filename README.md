@@ -67,8 +67,8 @@ See ':help c^D'.
 :CmdAlias SP  1,/\\\\begin{document}/-1s
 ```
 The :SP command will substitute in the LaTeX preambule (which starts in the
-first line and ends before '\begin{document}'). Note that the Vim pattern to
-find '\begin...' is '\\begin...' and each backslash needs to be escaped onece
+first line and ends before `\begin{document}`). Note that the Vim pattern to
+find `\begin...` is `\\begin...` and each backslash needs to be escaped onece
 more. Thus we have four slashes (like in *Python* :).
 
 
