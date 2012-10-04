@@ -18,11 +18,11 @@
 " you can change the default range or count of vim commands.
 " To define alias use the command: 
 " ```
-" :CmdAlias {alias} [range]{command} [history] [buflocal] [match_end] 
+" :CmdAlias [alias] [range][command] [history] [buflocal] [match_end] 
 " ```
-" where {alias} is the alias name, {command} is the command that should be
+" where [alias] is the alias name, [command] is the command that should be
 " executed. You might pretend new default [range] or count to the command. The
-" {alias} is any vim pattern that will be used to match what you are entering in
+" [alias] is any vim pattern that will be used to match what you are entering in
 " the ':' command line (the pattern will have pretended '\C^' and appended '\\>'
 " - the later one unless [match_end] is specified and equal 0). For commands
 " which do not run external programs you can also set [history]=1 (default is
@@ -42,6 +42,27 @@
 "
 " If you don't provide any argument to the :CmdAlias command it will list all
 " aliases.
+"
+"
+" The order in which you define aliases matters. More recent aliases are matched
+" first. If you want to list the aliases in alfabetic order use:
+" ```
+" :CmdAlias
+" ```
+" If you want to list them in the order they are tried:
+" ```
+" :CmdAlias!
+" ```
+" Note that
+" ```
+" :CmdAlias {alias}
+" ```
+" will list all aliases which starts with {alias} but
+" ```
+" :CmdAlias! {alias}
+" ```
+" will remove the {alias} (has to be equal to the registered alias).
+"
 "
 " Examples: 
 " ---------
@@ -166,6 +187,10 @@ if !exists("s:aliases")
     " 'match_end': 1/0 
     " }
 endif
+if !exists("s:idx")
+    " Used to sort aliases, the latest are tried first.
+    let s:idx = 0
+endif
 let s:system = !empty(globpath(&rtp, 'plugin/system.vim'))
 fun! ParseRange(cmdline) " {{{
     let range = ""
@@ -243,12 +268,12 @@ fun! ReWriteCmdLine() " {{{
 	    let cmd = "!"
 	    continue
 	endif
-	" XXX: detect verbose, silent and redir keywords.
+	" XXX: detect verbose, silent and debug keywords.
 	let decorator = matchstr(cmdline, '^\s*\(sil\%[ent]!\=\s*\|debug\s*\|\d*verb\%[ose]\s*\)*')
 	let cmdline = cmdline[len(decorator):]
 	let test=0
 	let [range, cmdline, error] = ParseRange(cmdline)
-	for alias in values(s:aliases)
+	for alias in sort(values(s:aliases), "<SID>CompareLA")
 	    if cmdline =~# '^\s*'.alias['alias'].(alias['match_end'] ? '\>' : '') && 
 			\ (index(alias['buflocal'], 0) != -1 || index(alias['buflocal'],  bufnr('%')) != -1)
 		let test=1
@@ -283,6 +308,9 @@ cnoremap <silent> <CR> <C-\>eReWriteCmdLine()<CR><CR>
 fun! <SID>Compare(i1,i2) "{{{
    return (a:i1['alias'] == a:i2['alias'] ? 0 : a:i1['alias'] > a:i2['alias'] ? 1 : -1)
 endfunc "}}}
+fun! <SID>CompareLA(i1,i2) "{{{
+   return (a:i1['idx'] == a:i2['idx'] ? 0 : a:i1['idx'] > a:i2['idx'] ? -1 : 1)
+endfunc "}}}
 fun! Cmd_Alias(alias, cmd, ...) " {{{
     " This is the same as the cmdalias plugin
     " https://github.com/vim-scripts/cmdalias.vim
@@ -302,7 +330,9 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
 	    \ 'buflocal':[buflocal],
 	    \ 'default_range': default_range,
 	    \ 'match_end': match_end, 
+	    \ 'idx': s:idx,
 	    \ }
+	let s:idx += 1
     else
 	if index(s:aliases[a:alias]['buflocal'], buflocal) == -1
 	    call add(s:aliases[a:alias]['buflocal'], buflocal)
@@ -310,14 +340,15 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
     endif
 endfun " }}}
 fun! <SID>RegAlias(bang,...) " {{{
-    if a:0 <= 1
+    if a:0 == 0 || a:0 == 1 && a:bang == ""
 	let alias_arg = ( a:0 ? a:1 : '')
 	let lmax = max(map(values(s:aliases), "len(v:val['alias'])"))
 	let rmax = max(map(values(s:aliases), "len(v:val['cmd'])+len(v:val['default_range'])"))
 	echohl Title
 	echo " alias".repeat(" ", lmax)."cmd".repeat(" ", 5+rmax-3)."his"
 	echohl Normal
-	for alias in sort(values(s:aliases), "<SID>Compare")
+	let compare = ( a:bang ? "<SID>Compare" : "<SID>CompareLA")
+	for alias in sort(values(s:aliases), compare)
 	    if index(alias['buflocal'], 0) != -1 || index(alias['buflocal'], bufnr('%')) != -1
 		if empty(alias_arg) || alias_arg =~ alias['alias'] || 
 			    \ substitute(alias['alias'], '\\%\?[\|\]\|\\%\?(\|\\)', '', 'g') =~ '^'.alias_arg

@@ -13,11 +13,11 @@ You can also register a defult range or count with the alias. In this way
 you can change the default range or count of vim commands.
 To define alias use the command: 
 ```viml
-:CmdAlias {alias} [range]{command} [history] [buflocal] [match_end] 
+:CmdAlias [alias] [range][command] [history] [buflocal] [match_end] 
 ```
-where {alias} is the alias name, {command} is the command that should be
+where [alias] is the alias name, [command] is the command that should be
 executed. You might pretend new default [range] or count to the command. The
-{alias} is any vim pattern that will be used to match what you are entering in
+[alias] is any vim pattern that will be used to match what you are entering in
 the ':' command line (the pattern will have pretended '\C^' and appended '\\>'
 - the later one unless [match_end] is specified and equal 0). For commands
 which do not run external programs you can also set [history]=1 (default is
@@ -36,6 +36,27 @@ it unless you really want to experiment - you've been warned ;).
 
 If you don't provide any argument to the :CmdAlias command it will list all
 aliases.
+
+
+The order in which you define aliases matters. More recent aliases are matched
+first. If you want to list the aliases in alfabetic order use:
+```viml
+:CmdAlias
+```
+If you want to list them in the order they are tried:
+```viml
+:CmdAlias!
+```
+Note that
+```viml
+:CmdAlias {alias}
+```
+will list all aliases which starts with {alias} but
+```viml
+:CmdAlias! {alias}
+```
+will remove the {alias} (has to be equal to the registered alias).
+
 
 Examples: 
 ---------
