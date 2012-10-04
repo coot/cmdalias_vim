@@ -310,20 +310,22 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
     endif
 endfun " }}}
 fun! <SID>RegAlias(bang,...) " {{{
-    if a:0 == 0
+    if a:0 <= 1
+	let alias_arg = ( a:0 ? a:1 : '')
 	let lmax = max(map(values(s:aliases), "len(v:val['alias'])"))
 	let rmax = max(map(values(s:aliases), "len(v:val['cmd'])+len(v:val['default_range'])"))
-	let g:lmax = lmax
-	let g:rmax = rmax
 	echohl Title
 	echo " alias".repeat(" ", lmax)."cmd".repeat(" ", 5+rmax-3)."his"
 	echohl Normal
 	for alias in sort(values(s:aliases), "<SID>Compare")
 	    if index(alias['buflocal'], 0) != -1 || index(alias['buflocal'], bufnr('%')) != -1
-		echo (index(alias['buflocal'], 0) == -1 ? '@' : ' ').
+		if empty(alias_arg) || alias_arg =~ alias['alias'] || 
+			    \ substitute(alias['alias'], '\\%\?[\|\]\|\\%\?(\|\\)', '', 'g') =~ '^'.alias_arg
+		    echo (index(alias['buflocal'], 0) == -1 ? '@' : ' ').
 			\ alias['alias'].repeat(" ", (5+lmax-len(alias['alias']))).
 			\ alias['default_range'].alias['cmd'].repeat(" ", (5+rmax-len(alias['default_range'].alias['cmd']))).
 			\ (alias['history'] ? 'yes' : '  ' ).repeat(" ", 4)
+		endif
 	    endif
 	endfor
     else
