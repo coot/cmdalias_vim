@@ -117,8 +117,7 @@ this just delets/sets up the \<CR\> map.  When you want to type a function:
 ```viml
 :fun! X()
 ```
-or use the expression register @= you need to switch aliases
-off. The plugin also defines \<C-M\> map to \<CR\> which doesn't trigger
+The plugin also defines \<C-M\> map to \<CR\> which doesn't trigger
 aliasing mechanism. So you can type ':fun! X()\<C-M\>' on the command line.
 ```viml
 :CmdAlias! {alias} 
@@ -150,13 +149,9 @@ you can run:
 Note: the first command has to end with / (to use |, this is a vim
 requirement.)
 
-Note: using the expression register:
-Since \<C-R\> is remapped in command line, you can not use it when you enter
-the expression register (:help ^R=). There is a patch on the way which fixes
-this disabling maps in expression register. Before it get accepted the
-plugin defies a map:
+Note: using the expression register: you need Vim 7.3.686. There is also:
 ```viml
-cnoremap <C-M> <CR>
+ cnoremap <C-M> <CR>
 ```
 It will not trigger aliases, any way it might be a good idea to have such
 a map in case you want to avoid aliases.
