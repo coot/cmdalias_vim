@@ -28,6 +28,9 @@ fun! ParseRange(cmdline) " {{{
 	if cmdline =~ '^\s*%'
 	    let range = matchstr(cmdline, '^\s*%\s*')
 	    return [range, cmdline[len(range):], 0]
+	elseif &cpoptions !~ '\*' && cmdline =~ '\s*\*'
+	    let range = matchstr(cmdline, '^\s*\*\s*')
+	    return [range, cmdline[len(range):], 0]
 	elseif cmdline =~ '^\s*\d'
 	    let add = matchstr(cmdline, '^\s*\d\+')
 	    let range .= add
