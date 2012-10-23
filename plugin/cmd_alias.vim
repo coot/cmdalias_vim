@@ -3,7 +3,6 @@
 " Copyright: © Marcin Szamotulski, 2012
 " License: vim-license, see :help license
 
-" INTERNALS {{{
 if !exists("s:aliases")
     let s:aliases = {}
     " entries are dictionaries:
@@ -35,22 +34,27 @@ fun! ParseRange(cmdline) " {{{
 	    let cmdline = cmdline[len(add):]
 	    " echom range
 	elseif cmdline =~ '^\.\s*'
-	    let add = matchstr(cmdline, '^\s*\.\%([+-]\d*\)\=')
+	    let add = matchstr(cmdline, '^\s*\.\%([+-]\+\d*\)\=')
+	    let range .= add
+	    let cmdline = cmdline[len(add):]
+	    " echom range
+	elseif cmdline =~ '^\s*\\[&/?]'
+	    let add = matchstr(cmdline, '^\s*\\[/&?]\%(\s*[-+]\+\d*\)')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
 	    " echom range
 	elseif cmdline =~ '^\s*\/'
-	    let add = matchstr(cmdline, '^\s*\/\%([^/]\|\\\@<=\/\)*\/\%([-+]\d*\)\=')
+	    let add = matchstr(cmdline, '^\s*\/\%([^/&?]\|\\\@<=\/\)*\/\%([-+]\+\d*\)\=')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
 	    " echom range . "<F>".cmdline."<"
 	elseif cmdline =~ '^\s*?'
-	    let add = matchstr(cmdline, '^\s*?\%([^?]\|\\\@<=?\)*?\%([-+]\d*\)\=')
+	    let add = matchstr(cmdline, '^\s*?\%([^?]\|\\\@<=?\)*?\%([-+]\+\d*\)\=')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
 	    " echom range . "<?>".cmdline."<"
 	elseif cmdline =~ '^\s*\$'
-	    let add = matchstr(cmdline, '^\s*\$\%(-\d*\)\=')
+	    let add = matchstr(cmdline, '^\s*\$\%(-\+\d*\)\=')
 	    let range .= add
 	    let cmdline = cmdline[len(add):]
 	    " echom range
@@ -226,4 +230,3 @@ fun! <SID>AliasToggle() " {{{
 endfun " }}}
 com! -nargs=0 CmdAliasToggle :call <SID>AliasToggle()
 nnoremap <F12> :CmdAliasToggle<CR>
-" }}}
