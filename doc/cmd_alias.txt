@@ -163,6 +163,9 @@ Some ideas for useful aliases: >
  CmdAlias rn reg\ 123456789 1
  CmdAlias ra reg abcdefghijklmnopqrstuwxyz 1
  CmdAlias bc\%[lose] BufClose
+
+ CmdAlias \*s\%[ubstitute] ?\\\\begin?,/\\\\end/s
+ CmdAlias \*s\%[ubstitute] ?^\s*fu\%[nction]?,/\s*endfu\%[nction]/
 <
 For the last alias one you need the BufClose plugin
 (http://www.vim.org/scripts/script.php?script_id=559).
