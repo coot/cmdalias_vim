@@ -166,6 +166,7 @@ Some ideas for useful aliases: >
 
  CmdAlias \*s\%[ubstitute] ?\\\\begin?,/\\\\end/s
  CmdAlias \*s\%[ubstitute] ?^\s*fu\%[nction]?,/\s*endfu\%[nction]/
+ CmdAlias lva lvimgrepadd
 <
 For the last alias one you need the BufClose plugin
 (http://www.vim.org/scripts/script.php?script_id=559).
