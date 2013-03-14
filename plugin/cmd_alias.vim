@@ -160,7 +160,7 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
     " https://github.com/vim-scripts/cmdalias.vim
     "
     " The reason for this function is that for users with aliases within the
-    " cmdlias.vim plugin it is just to copy past the old config and add one
+    " cmdlias.vim plugin it is just to copy-paste the old config and add one
     " underscore.
     let [default_range, cmd, error] = ParseRange(a:cmd)
     let hist = (a:0 >= 1 ? a:1 : 0)
@@ -178,9 +178,14 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
 	    \ }
 	let s:idx += 1
     else
+	let s:aliases['alias']=a:alias
+	let s:aliases['cmd']=cmd
+	let s:aliases['history']=hist
 	if index(s:aliases[a:alias]['buflocal'], buflocal) == -1
 	    call add(s:aliases[a:alias]['buflocal'], buflocal)
 	endif
+	let s:aliases['default_range']=default_range
+	let s:aliases['match_end']=match_end
     endif
 endfun " }}}
 fun! <SID>RegAlias(bang,...) " {{{
