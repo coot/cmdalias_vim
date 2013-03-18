@@ -178,14 +178,13 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
 	    \ }
 	let s:idx += 1
     else
-	let s:aliases['alias']=a:alias
-	let s:aliases['cmd']=cmd
-	let s:aliases['history']=hist
+	let s:aliases[a:alias]['cmd']=cmd
+	let s:aliases[a:alias]['history']=hist
 	if index(s:aliases[a:alias]['buflocal'], buflocal) == -1
 	    call add(s:aliases[a:alias]['buflocal'], buflocal)
 	endif
-	let s:aliases['default_range']=default_range
-	let s:aliases['match_end']=match_end
+	let s:aliases[a:alias]['default_range']=default_range
+	let s:aliases[a:alias]['match_end']=match_end
     endif
 endfun " }}}
 fun! <SID>RegAlias(bang,...) " {{{
