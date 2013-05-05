@@ -138,8 +138,11 @@ fun! ReWriteCmdLine() " {{{
     endif
     return cmdline
 endfunc "}}}
-cnoremap <C-M> <CR>
-cnoremap <CR> <C-\>eReWriteCmdLine()<CR><CR>
+cno <C-M> <CR>
+cno <Plug>eReWriteCmdLine <C-\>eReWriteCmdLine()<CR><CR>
+if !hasmapto('<Plug>eReWriteCmdLine', 'c')
+    cm <CR> <Plug>eReWriteCmdLine
+endif
 
 fun! <SID>Compare(i1,i2) "{{{
    return (a:i1['alias'] == a:i2['alias'] ? 0 : a:i1['alias'] > a:i2['alias'] ? 1 : -1)
