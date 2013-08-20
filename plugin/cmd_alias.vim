@@ -231,10 +231,10 @@ endfun " }}}
 com! -bang -nargs=* -complete=custom,<SID>CompleteAliases CmdAlias :call <SID>RegAlias(<q-bang>,<f-args>)
 fun! <SID>AliasToggle() " {{{
     if !empty(maparg('<CR>', 'c'))
-	echo 'cmd_alias: off'
+	echo 'cmdalias: off'
 	cunmap <CR>
     else
-	echo 'cmd_alias: on'
+	echo 'cmdalias: on'
 	cnoremap <silent> <CR> <C-\>eReWriteCmdLine()<CR><CR>
     endif
 endfun " }}}
