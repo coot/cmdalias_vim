@@ -110,15 +110,15 @@ fun! ReWriteCmdLine() " {{{
 	let test=0
 	let [range, cmdline, error] = ParseRange(cmdline)
 	for alias in sort(values(s:aliases), "<SID>CompareLA")
-	    if cmdline =~# '^\s*'.alias['alias'].(alias['match_end'] ? '\>' : '') && 
+	    let match = matchstr(cmdline, '\C^\%(\s\|:\)*'.alias['alias'].(alias['match_end'] ? '\ze\%($\|[^[:alpha:]]\)' : ''))
+	    if match != '' && 
 			\ (index(alias['buflocal'], 0) != -1 || index(alias['buflocal'],  bufnr('%')) != -1)
 		let test=1
 		break
 	    endif
 	endfor
 	if test
-	    let m = matchstr(cmdline, '\C^\s*'.alias['alias'].(alias['match_end'] ? '\>' : ''))
-	    let cmd = alias['cmd'].cmdline[len(m):]
+	    let cmd = alias['cmd'].cmdline[len(match):]
 	    " Default: if empty(range) use alias range otherwise use range:
 	    if empty(range)
 		let range = alias['default_range']
