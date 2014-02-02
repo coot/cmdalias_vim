@@ -1,6 +1,6 @@
 " Author: Marcin Szamotulski
 " Email: mszamot [AT] gmail [DOT] com
-" Copyright: © Marcin Szamotulski, 2012
+" Copyright: © Marcin Szamotulski, 2012-2014
 " License: vim-license, see :help license
 
 if !exists("s:aliases")
@@ -19,6 +19,29 @@ if !exists("s:idx")
     " Used to sort aliases, the latest are tried first.
     let s:idx = 0
 endif
+
+if !exists('CRDispatcher')
+    let g:CRDispatcher = {}
+    fun g:CRDispatcher.dispatch() dict
+	let cmdtype = getcmdtype()
+	if cmdtype == ':'
+	   if has_key(self, 'expr')
+	       return self.expr()
+	   endif
+	elseif cmdtype == '/'
+	    if has_key(self, 'search')
+		return self.search()
+	    endif
+	endif
+	return getcmdline()
+    endfun
+endif
+if !exists('*CRDispatch')
+    fun CRDispatch()
+	return g:CRDispatcher.dispatch()
+    endfun
+endif
+
 let s:system = !empty(globpath(&rtp, 'plugin/system.vim'))
 fun! ParseRange(cmdline) " {{{
     let range = ""
@@ -83,10 +106,7 @@ fun! ParseRange(cmdline) " {{{
     " If a:cmdline == '1000' we return here:
     return [ '', a:cmdline, 2]
 endfun " }}}
-fun! ReWriteCmdLine() " {{{
-    if getcmdtype() != ":"
-	return getcmdline()
-    endif
+fun! CRDispatcher.expr() dict " {{{
     let cmdlines = split(getcmdline(), '\\\@<!|')
     let scmdlines = copy(cmdlines)
 
@@ -139,9 +159,8 @@ fun! ReWriteCmdLine() " {{{
     return cmdline
 endfunc "}}}
 cno <C-M> <CR>
-cno <Plug>eReWriteCmdLine <C-\>eReWriteCmdLine()<CR><CR>
-if !hasmapto('<Plug>eReWriteCmdLine', 'c')
-    cm <CR> <Plug>eReWriteCmdLine
+if empty(maparg('<Plug>CRDispatch', 'c'))
+    cno <Plug>CRDispatch <C-\>eCRDispatch()<CR><CR>
 endif
 
 fun! <SID>Compare(i1,i2) "{{{
@@ -235,7 +254,7 @@ fun! <SID>AliasToggle() " {{{
 	cunmap <CR>
     else
 	echo 'cmdalias: on'
-	cnoremap <silent> <CR> <C-\>eReWriteCmdLine()<CR><CR>
+	cnoremap <silent> <CR> <C-\>eCRDispatch()<CR><CR>
     endif
 endfun " }}}
 com! -nargs=0 CmdAliasToggle :call <SID>AliasToggle()
