@@ -21,18 +21,31 @@ if !exists("s:idx")
 endif
 
 if !exists('CRDispatcher')
-    let g:CRDispatcher = {}
+    let g:CRDispatcher = {
+	\ 'expr': [],
+	\ 'search': [],
+	\ }
     fun g:CRDispatcher.dispatch() dict
 	let cmdtype = getcmdtype()
 	if cmdtype == ':'
-	   if has_key(self, 'expr')
-	       return self.expr()
-	   endif
+	    let key = 'expr'
 	elseif cmdtype == '/'
-	    if has_key(self, 'search')
-		return self.search()
-	    endif
+	    let key = 'search'
+	else
+	    return getcmdline()
 	endif
+	if has_key(self, key)
+	    let Expr = get(self, key)
+	    if type(Expr) == 3
+		let res = getcmdline()
+		for F in Expr
+		    let res = F(res)
+		endfor
+		return res
+	    else
+		return self[key]()
+	    endif
+	 endif
 	return getcmdline()
     endfun
 endif
