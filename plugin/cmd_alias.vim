@@ -212,6 +212,7 @@ fun! <SID>CompleteAliases(A,B,C) " {{{
 endfun " }}}
 com! -bang -nargs=* -complete=custom,<SID>CompleteAliases CmdAlias :call <SID>RegAlias(<q-bang>,<f-args>)
 fun! <SID>AliasToggle() " {{{
+    " TODO: toggle variable instead of turn of CRDispatcher
     if !empty(maparg('<CR>', 'c'))
 	echo 'cmdalias: off'
 	cunmap <CR>
