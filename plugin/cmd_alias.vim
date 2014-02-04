@@ -20,6 +20,8 @@ if !exists("s:idx")
     let s:idx = 0
 endif
 
+let s:AliasToggle = 1
+
 let s:system = !empty(globpath(&rtp, 'plugin/system.vim'))
 fun! ParseRange(cmdline) " {{{
     let range = ""
@@ -208,14 +210,7 @@ fun! <SID>CompleteAliases(A,B,C) " {{{
 endfun " }}}
 com! -bang -nargs=* -complete=custom,<SID>CompleteAliases CmdAlias :call <SID>RegAlias(<q-bang>,<f-args>)
 fun! <SID>AliasToggle() " {{{
-    " TODO: toggle variable instead of turn of CRDispatcher
-    if !empty(maparg('<CR>', 'c'))
-	echo 'cmdalias: off'
-	cunmap <CR>
-    else
-	echo 'cmdalias: on'
-	cnoremap <silent> <CR> <C-\>eCRDispatch()<CR><CR>
-    endif
+    let s:AliasToggle = !s:AliasToggle
 endfun " }}}
 com! -nargs=0 CmdAliasToggle :call <SID>AliasToggle()
 nnoremap <F12> :CmdAliasToggle<CR>
