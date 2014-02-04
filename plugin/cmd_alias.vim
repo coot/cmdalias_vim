@@ -84,47 +84,43 @@ fun! ParseRange(cmdline) " {{{
     " If a:cmdline == '1000' we return here:
     return [ '', a:cmdline, 2]
 endfun " }}}
-fun! ReWriteCmdLine(cmdline) " {{{
-    let cmdlines = split(a:cmdline, '\\\@<!|')
-    let scmdlines = copy(cmdlines)
-
-    let n_cmdlines = []
-    for cmdline in cmdlines
-	" XXX: detect verbose, silent and debug keywords.
-	let decorator = matchstr(cmdline, '^\s*\(sil\%[ent]!\=\s*\|debug\s*\|\d*verb\%[ose]\s*\)*')
-	let cmdline = cmdline[len(decorator):]
-	let test=0
-	let [range, cmdline, error] = ParseRange(cmdline)
-	for alias in sort(values(s:aliases), "<SID>CompareLA")
-	    let match = matchstr(cmdline, '\C^\%(\s\|:\)*'.alias['alias'].(alias['match_end'] ? '\ze\%($\|[^[:alpha:]]\)' : ''))
-	    if match != '' && 
-			\ (index(alias['buflocal'], 0) != -1 || index(alias['buflocal'],  bufnr('%')) != -1)
-		let test=1
-		break
-	    endif
-	endfor
-	if test
-	    let cmd = alias['cmd'].cmdline[len(match):]
-	    " Default: if empty(range) use alias range otherwise use range:
-	    if empty(range)
-		let range = alias['default_range']
-	    endif
-	    if alias['cmd'][0] != '!' && get(alias, 'history', 0)
-		call histadd(":", getcmdline())
-		let cmd .= "|call histdel(':', -1)"
-	    endif
-	else
-	    let cmd = cmdline
+fun! ReWriteCmdLine(dispatcher) " {{{
+    " a:dispatcher: is crdispatcher#CRDispatcher dict
+    if a:dispatcher.cmdtype !=# ':' || !s:AliasToggle
+	return
+    endif
+    let cmdline = a:dispatcher.cmdline
+    let decorator = matchstr(cmdline, '^\s*\(sil\%[ent]!\=\s*\|debug\s*\|\d*verb\%[ose]\s*\)*')
+    let cmdline = cmdline[len(decorator):]
+    let test=0
+    let [range, cmdline, error] = ParseRange(cmdline)
+    for alias in sort(values(s:aliases), "<SID>CompareLA")
+	let match = matchstr(cmdline, '\C^\%(\s\|:\)*'.alias['alias'].(alias['match_end'] ? '\ze\%($\|[^[:alpha:]]\)' : ''))
+	if match != '' && 
+		    \ (index(alias['buflocal'], 0) != -1 || index(alias['buflocal'],  bufnr('%')) != -1)
+	    let test=1
+	    break
 	endif
-	call add(n_cmdlines, decorator.range.cmd)
     endfor
-    let cmdline = join(n_cmdlines, "|")
+    if test
+	let cmd = alias['cmd'].cmdline[len(match):]
+	" Default: if empty(range) use alias range otherwise use range:
+	if empty(range)
+	    let range = alias['default_range']
+	endif
+	if alias['cmd'][0] != '!' && get(alias, 'history', 0)
+	    call histadd(":", getcmdline())
+	    let cmd .= "|call histdel(':', -1)"
+	endif
+    else
+	let cmd = cmdline
+    endif
+    let a:dispatcher.cmdline = decorator . range . cmd
     if cmdline !~ 'cmd_alias_debug' && exists("g:cmd_alias_debug")
 	call add(g:cmd_alias_debug, { 'cmdline' : cmdline, 'alias' : alias, 'cmd' : cmd, 'scmdlines' : scmdlines})
     endif
-    return cmdline
 endfunc "}}}
-call add(crdispatcher#CRDispatcher[':'], function('ReWriteCmdLine'))
+call add(crdispatcher#CRDispatcher['callbacks'], function('ReWriteCmdLine'))
 
 fun! <SID>Compare(i1,i2) "{{{
    return (a:i1['alias'] == a:i2['alias'] ? 0 : a:i1['alias'] > a:i2['alias'] ? 1 : -1)
