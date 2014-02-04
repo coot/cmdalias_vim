@@ -119,24 +119,12 @@ fun! ParseRange(cmdline) " {{{
     " If a:cmdline == '1000' we return here:
     return [ '', a:cmdline, 2]
 endfun " }}}
-fun! CRDispatcher.expr() dict " {{{
-    let cmdlines = split(getcmdline(), '\\\@<!|')
+fun! ReWriteCmdLine(cmdline) " {{{
+    let cmdlines = split(a:cmdline, '\\\@<!|')
     let scmdlines = copy(cmdlines)
 
     let n_cmdlines = []
     for cmdline in cmdlines
-	if s:system && cmdline[0:1] == "! "
-	    if !exists("*WrapCmdLine")
-		echoe 'You need to update system.vim plugin to version 3'
-		break
-	    else
-		let cmdline = WrapCmdLine()
-	    endif
-	    call add(n_cmdlines, cmdline)
-	    let alias = "! " " This is for debuging
-	    let cmd = "!"
-	    continue
-	endif
 	" XXX: detect verbose, silent and debug keywords.
 	let decorator = matchstr(cmdline, '^\s*\(sil\%[ent]!\=\s*\|debug\s*\|\d*verb\%[ose]\s*\)*')
 	let cmdline = cmdline[len(decorator):]
@@ -171,6 +159,7 @@ fun! CRDispatcher.expr() dict " {{{
     endif
     return cmdline
 endfunc "}}}
+call add(CRDispatcher['expr'], function('ReWriteCmdLine'))
 cno <C-M> <CR>
 if empty(maparg('<Plug>CRDispatch', 'c'))
     cno <Plug>CRDispatch <C-\>eCRDispatch()<CR><CR>
