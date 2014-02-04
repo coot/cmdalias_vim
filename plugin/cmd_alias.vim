@@ -20,41 +20,6 @@ if !exists("s:idx")
     let s:idx = 0
 endif
 
-if !exists('CRDispatcher')
-    let g:CRDispatcher = {
-	\ 'expr': [],
-	\ 'search': [],
-	\ }
-    fun g:CRDispatcher.dispatch() dict
-	let cmdtype = getcmdtype()
-	if cmdtype == ':'
-	    let key = 'expr'
-	elseif cmdtype == '/'
-	    let key = 'search'
-	else
-	    return getcmdline()
-	endif
-	if has_key(self, key)
-	    let Expr = get(self, key)
-	    if type(Expr) == 3
-		let res = getcmdline()
-		for F in Expr
-		    let res = F(res)
-		endfor
-		return res
-	    else
-		return self[key]()
-	    endif
-	 endif
-	return getcmdline()
-    endfun
-endif
-if !exists('*CRDispatch')
-    fun CRDispatch()
-	return g:CRDispatcher.dispatch()
-    endfun
-endif
-
 let s:system = !empty(globpath(&rtp, 'plugin/system.vim'))
 fun! ParseRange(cmdline) " {{{
     let range = ""
@@ -159,11 +124,7 @@ fun! ReWriteCmdLine(cmdline) " {{{
     endif
     return cmdline
 endfunc "}}}
-call add(CRDispatcher['expr'], function('ReWriteCmdLine'))
-cno <C-M> <CR>
-if empty(maparg('<Plug>CRDispatch', 'c'))
-    cno <Plug>CRDispatch <C-\>eCRDispatch()<CR><CR>
-endif
+call add(crdispatcher#CRDispatcher[':'], function('ReWriteCmdLine'))
 
 fun! <SID>Compare(i1,i2) "{{{
    return (a:i1['alias'] == a:i2['alias'] ? 0 : a:i1['alias'] > a:i2['alias'] ? 1 : -1)
