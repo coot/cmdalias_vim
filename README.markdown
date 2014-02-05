@@ -6,40 +6,40 @@ default range add it to the cmd rather than to the alias (this seems to be
 more intuitive).
 
 
-This plugin implements aliases for command names, wihtout vim restriction:
-user defined commands via :command must begin with a captial letter. Using
+This plugin implements aliases for command names, without vim restriction:
+user defined commands via :command must begin with a capital letter. Using
 this plugin you make an alias to a command where the alias, is any sequence.
-You can also register a defult range or count with the alias. In this way
+You can also register a default range or count with the alias. In this way
 you can change the default range or count of vim commands.
 To define alias use the command: 
 ```viml
 :CmdAlias [alias] [range][command] [history] [buflocal] [match_end] 
 ```
-where [alias] is the alias name, [command] is the command that should be
-executed. You might pretend new default [range] or count to the command. The
-[alias] is any vim pattern that will be used to match what you are entering in
-the ':' command line (the pattern will have pretended '\C^' and appended '\\>'
-- the later one unless [match_end] is specified and equal 0). For commands
-which do not run external programs you can also set [history]=1 (default is
-0), then the command history will remember what you have typped rather than
-what was executed. But usage of it is limited, for example you can use with
-commands that echo some output because it will be hidden by next call to
-histdel() vim function. If [buflocal] has true value (1 for example) then the
-alias will be only valid in the current buffer (it will be denotes with @ when
-listing the aliases as Vim does for maps).
+where `[alias]` is the alias name, `[command]` is the command that should be
+executed. You might pretend new default `[range]` or count to the command. The
+`[alias]` is any vim pattern that will be used to match what you are entering in
+the `:` command line (the pattern will have pretended `\C^` and appended `\\>` -
+the later one unless [match&#95;end] is specified and equal `0`). For
+commands which do not run external programs you can also set `[history]=1`
+(default is `0`), then the command history will remember what you have typped
+rather than what was executed. But usage of it is limited, for example you can
+use with commands that echo some output because it will be hidden by next call
+to `histdel()` vim function. If `[buflocal]` has true value (`1` for example)
+then the alias will be only valid in the current buffer (it will be denotes
+with @ when listing the aliases as Vim does for maps).
 
 
-Note: If you define [match_end] = 0 you might fall into troubles, simply
-because a the plugin might substitute part of a command name. So don't use
+Note: If you define `[match_end] = 0` you might fall into troubles, simply
+because the plugin might substitute part of a command name.  So don't use
 it unless you really want to experiment - you've been warned ;).
 
 
-If you don't provide any argument to the :CmdAlias command it will list all
+If you don't provide any argument to the `:CmdAlias` command it will list all
 aliases.
 
 
 The order in which you define aliases matters. More recent aliases are matched
-first. If you want to list the aliases in alfabetic order use:
+first. If you want to list the aliases in alphabetic order use:
 ```viml
 :CmdAlias
 ```
@@ -63,17 +63,17 @@ Examples:
 ```viml
 :CmdAlias ali\%[as] CmdAlias
 ```
-Note: this alias would not work if we defined it with [history]=1.
+Note: this alias would not work if we defined it with `[history]=1`.
 ```viml
 :CmdAlias s %s
 ```
-Change the default range of :s command from the current line to whole
-buffer. Note that :su will act with vim default range (the current line).
+Change the default range of `:s` command from the current line to whole
+buffer. Note that `:su` will act with vim default range (the current line).
 ```viml
 :CmdAlias a\%[ppend] Append 
 ```
 define alias to the user command Append which will overwrite the vim command
-:append. The  \%[...] allows that if you type: 'a' or 'ap' or 'app', ...
+:append. The  `\%[...]` allows that if you type: 'a' or 'ap' or 'app', ...
 or 'append' then the Append command will be used (as with vim many commands)
 ```viml
 :CmdAlias bc\%[lose] BufClose
@@ -82,7 +82,7 @@ You will find the handy BufClose command in BufClose plugin by Christian
 Robinson.
 
 Tip: to find if an alias is not coliding type ':\<alias\>\<C-d\>'.
-See ':help c^D'.
+See `:help c^D`.
 
 ```viml
 :CmdAlias SP  1,/\\\\begin{document}/-1s
@@ -96,7 +96,7 @@ more. Thus we have four slashes (like in *Python* :).
 VIMRC
 -----
 
-To configure aliases on startup you haveto add the following lines to your
+To configure aliases on startup you have to add the following lines to your
 vimrc file:
 ```viml
 augroup VIMRC_aliases
@@ -113,7 +113,7 @@ Other Commands and Maps:
 :CmdAliasToggle 
 ```
 toggles on/of the aliases. Since the plugin remaps \<CR\> in the command line
-this just delets/sets up the \<CR\> map.  When you want to type a function:
+this just deletes/sets up the \<CR\> map.  When you want to type a function:
 ```viml
 :fun! X()
 ```
@@ -161,7 +161,7 @@ If you want to debug define a list
  let g:cmd_alias_debug = []
 ``` 
 and for all calls an entry to this list will be appended.
-(except command lines which matches cmd_alias_debug since we don't want to
+(except command lines which matches `cmd_alias_debug` since we don't want to
 record accessing to this variable)
 
 
@@ -177,10 +177,6 @@ For the last alias one you need the
 
 
 Author: Marcin Szamotulski
-
 Email: mszamot [AT] gmail [DOT] com
-
-Copyright: © Marcin Szamotulski, 2012
-
-License: vim-license, see :help license
-
+Copyright: © Marcin Szamotulski, 2012-2014
+License: vim-license, see `:help license`
