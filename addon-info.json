@@ -1,0 +1,17 @@
+{
+    "name": "CommandAlias",
+    "repository":  {
+	"type": "git",
+	"url": "git@github.com:coot/cmdalias_vim.git",
+	"script-type": "plugin",
+	"vim_script_nr": 4250,
+    },
+    "dependencies": {
+	"CRDispatcher": {
+	    "type": "git",
+	    "url": "git@github.com:coot/CRDispatcher.git",
+	    "script-type": "plugin",
+	    "vim_script_nr": 4856,
+	},
+    },
+}
