@@ -167,6 +167,7 @@ record accessing to this variable)
 
 Ideas for aliases:
 ```viml
+CmdAlias h\%[elp] top\ help   " very useful if you use 'splitbelow', but you want help to split above
 CmdAlias re reg\ "0-*+/ 1
 CmdAlias rn reg\ 123456789 1
 CmdAlias ra reg abcdefghijklmnopqrstuwxyz 1
