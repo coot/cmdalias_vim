@@ -1,5 +1,6 @@
 {
     "name": "CommandAlias",
+    "author": "Marcin Szamotulski",
     "repository":  {
 	"type": "git",
 	"url": "git@github.com:coot/cmdalias_vim.git",
