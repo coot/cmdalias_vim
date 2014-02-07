@@ -122,7 +122,14 @@ fun! ReWriteCmdLine(dispatcher) " {{{
 	call add(g:cmd_alias_debug, { 'cmdline' : cmdline, 'alias' : alias, 'cmd' : cmd, 'scmdlines' : scmdlines})
     endif
 endfunc "}}}
-call add(crdispatcher#CRDispatcher['callbacks'], function('ReWriteCmdLine'))
+try
+    call add(crdispatcher#CRDispatcher['callbacks'], function('ReWriteCmdLine'))
+catch /E121:/
+    echohl ErrorMsg
+    echom 'CommandAlias Plugin: please install "https://github.com/coot/CRDispatcher".'
+    echohl Normal
+    finish
+endtry
 
 fun! <SID>Compare(i1,i2) "{{{
    return (a:i1['alias'] == a:i2['alias'] ? 0 : a:i1['alias'] > a:i2['alias'] ? 1 : -1)
