@@ -159,6 +159,7 @@ record accessing to this variable)
 
 
 Some ideas for useful aliases: >
+ CmdAlias h\%[elp] top\ help
  CmdAlias re reg\ "0-*+/ 1
  CmdAlias rn reg\ 123456789 1
  CmdAlias ra reg abcdefghijklmnopqrstuwxyz 1
