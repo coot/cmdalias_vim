@@ -26,13 +26,13 @@ let s:system = !empty(globpath(&rtp, 'plugin/system.vim'))
 fun! ReWriteCmdLine(dispatcher) " {{{
     " a:dispatcher: is crdispatcher#CRDispatcher dict
     if a:dispatcher.cmdtype !=# ':' || !s:AliasToggle
+	let a:dispatcher.state = 2
 	return
     endif
-    let cmdline = a:dispatcher.cmdline
-    let decorator = matchstr(cmdline, '^\s*\(sil\%[ent]!\=\s*\|debug\s*\|\d*verb\%[ose]\s*\)*')
-    let cmdline = cmdline[len(decorator):]
+    let a:dispatcher.state = 1
+    let CMD = a:dispatcher.cmd
+    let cmdline = CMD.cmdline
     let test=0
-    let [range, cmdline, error] = ParseRange(cmdline)
     for alias in sort(values(s:aliases), "<SID>CompareLA")
 	let match = matchstr(cmdline, '\C^\%(\s\|:\)*'.alias['alias'].(alias['match_end'] ? '\ze\%($\|[^[:alpha:]]\)' : ''))
 	if match != '' && 
@@ -54,7 +54,7 @@ fun! ReWriteCmdLine(dispatcher) " {{{
     else
 	let cmd = cmdline
     endif
-    let a:dispatcher.cmdline = decorator . range . cmd
+    let CMD.cmdline = cmd
     if cmdline !~ 'cmd_alias_debug' && exists("g:cmd_alias_debug")
 	call add(g:cmd_alias_debug, { 'cmdline' : cmdline, 'alias' : alias, 'cmd' : cmd, 'scmdlines' : scmdlines})
     endif
@@ -89,7 +89,7 @@ fun! Cmd_Alias(alias, cmd, ...) " {{{
     " The reason for this function is that for users with aliases within the
     " cmdlias.vim plugin it is just to copy-paste the old config and add one
     " underscore.
-    let [default_range, cmd, error] = ParseRange(a:cmd)
+    let [default_range, cmd, error] = vimlparsers#ParseRange(a:cmd)
     let hist = (a:0 >= 1 ? a:1 : 0)
     let buflocal = (a:0 >= 2 && a:2 ? bufnr("%") : 0 )
     let match_end = (a:0 >= 3 ? a:3 : 1)
