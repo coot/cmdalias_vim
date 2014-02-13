@@ -23,69 +23,6 @@ endif
 let s:AliasToggle = 1
 
 let s:system = !empty(globpath(&rtp, 'plugin/system.vim'))
-fun! ParseRange(cmdline) " {{{
-    let range = ""
-    let cmdline = a:cmdline
-    while len(cmdline)
-	let cl = cmdline
-	if cmdline =~ '^\s*%'
-	    let range = matchstr(cmdline, '^\s*%\s*')
-	    return [range, cmdline[len(range):], 0]
-	elseif &cpoptions !~ '\*' && cmdline =~ '\s*\*'
-	    let range = matchstr(cmdline, '^\s*\*\s*')
-	    return [range, cmdline[len(range):], 0]
-	elseif cmdline =~ '^\s*\d'
-	    let add = matchstr(cmdline, '^\s*\d\+')
-	    let range .= add
-	    let cmdline = cmdline[len(add):]
-	    " echom range
-	elseif cmdline =~ '^\.\s*'
-	    let add = matchstr(cmdline, '^\s*\.\%([+-]\+\d*\)\=')
-	    let range .= add
-	    let cmdline = cmdline[len(add):]
-	    " echom range
-	elseif cmdline =~ '^\s*\\[&/?]'
-	    let add = matchstr(cmdline, '^\s*\\[/&?]\%(\s*[-+]\+\d*\)')
-	    let range .= add
-	    let cmdline = cmdline[len(add):]
-	    " echom range
-	elseif cmdline =~ '^\s*\/'
-	    let add = matchstr(cmdline, '^\s*\/\%([^/&?]\|\\\@<=\/\)*\/\%([-+]\+\d*\)\=')
-	    let range .= add
-	    let cmdline = cmdline[len(add):]
-	    " echom range . "<F>".cmdline."<"
-	elseif cmdline =~ '^\s*?'
-	    let add = matchstr(cmdline, '^\s*?\%([^?]\|\\\@<=?\)*?\%([-+]\+\d*\)\=')
-	    let range .= add
-	    let cmdline = cmdline[len(add):]
-	    " echom range . "<?>".cmdline."<"
-	elseif cmdline =~ '^\s*\$'
-	    let add = matchstr(cmdline, '^\s*\$\%(-\+\d*\)\=')
-	    let range .= add
-	    let cmdline = cmdline[len(add):]
-	    " echom range
-	elseif cmdline =~ '^\s*\\\%(\/\|?\|&\)'
-	    let add = matchstr(cmdline, '^\s*\\\%(\/\|?\|&\)')
-	    let range .== add
-	    let cmdine = cmdline[add:]
-	    " echom range
-	elseif cmdline =~ '^\s*[;,]'
-	    let add = matchstr(cmdline, '^\s*[;,]')
-	    let range .= add
-	    let cmdline = cmdline[len(add):]
-	    " echom range . "<;>".cmdline
-	elseif cmdline =~ '^\s*\w'
-	    return [ range, cmdline, 0]
-	endif
-	if cl == cmdline
-	    " Parser didn't make a step (so it falls into a loop)
-	    " XXX: when this might happen?
-	    return [ '', a:cmdline, 1]
-	endif
-    endwhile
-    " If a:cmdline == '1000' we return here:
-    return [ '', a:cmdline, 2]
-endfun " }}}
 fun! ReWriteCmdLine(dispatcher) " {{{
     " a:dispatcher: is crdispatcher#CRDispatcher dict
     if a:dispatcher.cmdtype !=# ':' || !s:AliasToggle
