@@ -30,11 +30,12 @@ fun! ReWriteCmdLine(dispatcher) " {{{
 	return
     endif
     let a:dispatcher.state = 1
-    let CMD = a:dispatcher.cmd
-    let cmdline = CMD.cmdline
+    let cmd = a:dispatcher.cmd
+    let cmdline = cmd.cmd
+    let range = cmd.range
     let test=0
     for alias in sort(values(s:aliases), "<SID>CompareLA")
-	let match = matchstr(cmdline, '\C^\%(\s\|:\)*'.alias['alias'].(alias['match_end'] ? '\ze\%($\|[^[:alpha:]]\)' : ''))
+	let match = matchstr(cmdline, '\C^[[:space:]:]*'.alias['alias'].(alias['match_end'] ? '\ze\%($\|[^[:alpha:]]\)' : ''))
 	if match != '' && 
 		    \ (index(alias['buflocal'], 0) != -1 || index(alias['buflocal'],  bufnr('%')) != -1)
 	    let test=1
@@ -42,21 +43,19 @@ fun! ReWriteCmdLine(dispatcher) " {{{
 	endif
     endfor
     if test
-	let cmd = alias['cmd'].cmdline[len(match):]
+	let cmd_ = alias['cmd'].cmdline[len(match):]
 	" Default: if empty(range) use alias range otherwise use range:
 	if empty(range)
 	    let range = alias['default_range']
 	endif
 	if alias['cmd'][0] != '!' && get(alias, 'history', 0)
 	    call histadd(":", getcmdline())
-	    let cmd .= "|call histdel(':', -1)"
+	    let cmd_ .= "|call histdel(':', -1)"
 	endif
-    else
-	let cmd = cmdline
+	let cmd.cmd = cmd_
     endif
-    let CMD.cmdline = cmd
-    if cmdline !~ 'cmd_alias_debug' && exists("g:cmd_alias_debug")
-	call add(g:cmd_alias_debug, { 'cmdline' : cmdline, 'alias' : alias, 'cmd' : cmd, 'scmdlines' : scmdlines})
+    if cmd.Join() !~ 'cmd_alias_debug' && exists("g:cmd_alias_debug")
+	call add(g:cmd_alias_debug, { 'cmdline' : cmd.Join(), 'alias' : alias, 'cmd' : cmd})
     endif
 endfunc "}}}
 try
