@@ -138,11 +138,19 @@ fun! <SID>RegAlias(bang,...) " {{{
 	    if a:0 == 0
 		echoerr 'you have to specify the alias to remove'
 	    endif
-	    unlet s:aliases[a:1]
+	    try
+		unlet s:aliases[a:1]
+	    catch /E716:/
+		echohl ErrorMsg
+		echomsg 'alias "'.a:1.'" does not exists'
+		echohl Normal
+	    endtry
 	    return
 	endif
 	if a:0 < 2
+	    echohl ErrorMsg
 	    echoerr 'you have to specify the alias and the command'
+	    echohl Normal
 	    return
 	endif
 	call Cmd_Alias(a:1, a:2, (a:0 >=3 ? a:3 : 0), (a:0 >=4 && a:4 ? bufnr('%') : 0), (a:0>=5 ? a:5 : 1))
