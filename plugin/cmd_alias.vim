@@ -119,7 +119,7 @@ fun! <SID>RegAlias(bang,...) " {{{
 	let lmax = max(map(values(s:aliases), "len(v:val['alias'])"))
 	let rmax = max(map(values(s:aliases), "len(v:val['cmd'])+len(v:val['default_range'])"))
 	echohl Title
-	echo " alias".repeat(" ", lmax)."cmd".repeat(" ", 5+rmax-3)."his"
+	echo " alias".repeat(" ", lmax)."cmd".repeat(" ", 5+rmax-3)."history"
 	echohl Normal
 	let compare = ( a:bang == "" ? "<SID>Compare" : "<SID>CompareLA")
 	for alias in sort(values(s:aliases), compare)
